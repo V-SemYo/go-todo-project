@@ -4,16 +4,23 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
 	webDirect := "./web"
 	http.Handle("/", http.FileServer(http.Dir(webDirect)))
 
-	// Пометка, чтоб видеть запуск сервера
-	fmt.Println("Server started on port :7540")
+	port := os.Getenv("TODO_PORT")
+	if port == "" {
+		port = "7540"
+	}
+	address := ":" + port
 
-	err := http.ListenAndServe(":7540", nil)
+	// Пометка, чтоб видеть запуск сервера
+	fmt.Println("Server started on http://localhost" + address)
+
+	err := http.ListenAndServe(address, nil)
 	if err != nil {
 		log.Fatal("server error: ", err)
 	}
