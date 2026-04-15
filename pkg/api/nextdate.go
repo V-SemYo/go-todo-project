@@ -10,6 +10,7 @@ import (
 
 const dateFormat = "20060102"
 
+// NextDate вычисляет следующую дату выполнения задачи на основе правила повторения
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	date, err := time.Parse(dateFormat, dstart)
 	if err != nil {
@@ -50,6 +51,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	}
 }
 
+// NextDateHandler обрабатывает GET-запросы /api/nextdate
 func NextDateHandler(w http.ResponseWriter, r *http.Request) {
 	date := r.FormValue("date")
 	repeat := r.FormValue("repeat")
