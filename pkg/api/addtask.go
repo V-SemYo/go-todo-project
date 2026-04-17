@@ -37,8 +37,8 @@ func validateDate(task *db.Task, now time.Time) error {
 	return nil
 }
 
-// addTaskHandle обрабатывает POST-запросы на /api/task
-func addTaskHandle(w http.ResponseWriter, r *http.Request) {
+// AddTaskHandler обрабатывает POST-запросы на /api/task
+func AddTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
