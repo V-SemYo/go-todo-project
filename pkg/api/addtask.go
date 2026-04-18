@@ -17,12 +17,9 @@ func validateDate(task *db.Task, now time.Time) error {
 	if err != nil {
 		return fmt.Errorf("wrong date format: %w", err)
 	}
+	nowDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	if task.Repeat != "" {
-		if tDate.Before(now) || tDate.Format(dateFormat) == now.Format(dateFormat) {
-			if task.Repeat == "d 1" && tDate.Format(dateFormat) == now.Format(dateFormat) {
-				task.Date = now.Format(dateFormat)
-				return nil
-			}
+		if tDate.Before(nowDate) {
 			next, err := NextDate(now, task.Date, task.Repeat)
 			if err != nil {
 				return fmt.Errorf("wrong repeat rule: %w", err)
@@ -31,7 +28,7 @@ func validateDate(task *db.Task, now time.Time) error {
 		}
 		return nil
 	}
-	if tDate.Before(now) {
+	if tDate.Before(nowDate) {
 		task.Date = now.Format(dateFormat)
 	}
 	return nil

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 )
@@ -25,6 +26,37 @@ func AddTask(task *Task) (int64, error) {
 		return 0, fmt.Errorf("getting last insert error: %w", err)
 	}
 	return id, nil
+}
+
+// GetTask возвращает задачу по её ID (или err)
+func GetTask(id string) (*Task, error) {
+	task := &Task{}
+	query := `SELECT id, date, title, comment, repeat FROM scheduler WHERE id = ?`
+	err := DB.QueryRow(query, id).Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("task not found")
+		}
+		return nil, fmt.Errorf("getting task error: %w", err)
+	}
+	return task, nil
+}
+
+// UpdateTask обновляет существующую задачу, если задачи нет вернёт err
+func UpdateTask(task *Task) error {
+	query := `UPDATE scheduler SET date = ?, title = ?, comment = ?, repeat = ? WHERE id = ?`
+	res, err := DB.Exec(query, task.Date, task.Title, task.Comment, task.Repeat, task.ID)
+	if err != nil {
+		return fmt.Errorf("updating task error: %w", err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("getting rows affected error: %w", err)
+	}
+	if count == 0 {
+		return fmt.Errorf("task not found")
+	}
+	return nil
 }
 
 // Tasks возвращает список задач, отсортированных по дате из таблицы scheduler
