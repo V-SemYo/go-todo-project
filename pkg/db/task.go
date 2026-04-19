@@ -59,6 +59,40 @@ func UpdateTask(task *Task) error {
 	return nil
 }
 
+// DeleteTask удаляет задачу по указанному id
+func DeleteTask(id string) error {
+	query := `DELETE FROM scheduler WHERE id = ?`
+	res, err := DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("deleting task error: %w", err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("getting rows affected error: %w", err)
+	}
+	if count == 0 {
+		return fmt.Errorf("task not found")
+	}
+	return nil
+}
+
+// UpdateTaskDate обновляет дату указанной задачи
+func UpdateTaskDate(id, newDate string) error {
+	query := `UPDATE scheduler SET date = ? WHERE id = ?`
+	res, err := DB.Exec(query, newDate, id)
+	if err != nil {
+		return fmt.Errorf("updating date error: %w", err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("getting rows affected error: %w", err)
+	}
+	if count == 0 {
+		return fmt.Errorf("task not found")
+	}
+	return nil
+}
+
 // Tasks возвращает список задач, отсортированных по дате из таблицы scheduler
 func Tasks(limit int, search string) ([]*Task, error) {
 	var query string
