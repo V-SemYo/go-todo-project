@@ -13,6 +13,8 @@ func TaskHandler(w http.ResponseWriter, r *http.Request) {
 		GetTaskHandler(w, r)
 	case http.MethodPut:
 		EditTaskHandler(w, r)
+	case http.MethodDelete:
+		DeleteTaskHandler(w, r)
 	default:
 		writeJSON(w, map[string]string{"error": "method not allowed"})
 	}
