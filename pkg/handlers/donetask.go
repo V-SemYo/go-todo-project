@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"go-todo-project/pkg/db"
