@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// GetTaskHandler обрабатывает GET /api/task?id=номер задачи
+// GetTaskHandler обрабатывает GET /api/task?id=<№id>
 func GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if id == "" {

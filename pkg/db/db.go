@@ -21,6 +21,7 @@ repeat VARCHAR(128) NOT NULL DEFAULT ""
 CREATE INDEX IF NOT EXISTS index_date ON scheduler(date);
 `
 
+// InitDB открывает БД и создаёт таблицу
 func InitDB(dbFile string) error {
 	var err error
 	DB, err = sql.Open("sqlite", dbFile)
