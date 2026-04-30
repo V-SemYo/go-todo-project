@@ -9,15 +9,15 @@ import (
 func GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if id == "" {
-		writeJSON(w, map[string]string{"error": "id not specified"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "id not specified"})
 		return
 	}
 
 	task, err := db.GetTask(id)
 	if err != nil {
-		writeJSON(w, map[string]string{"error": err.Error()})
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 
-	writeJSON(w, task)
+	writeJSON(w, http.StatusOK, task)
 }

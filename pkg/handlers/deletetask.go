@@ -9,14 +9,14 @@ import (
 func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if id == "" {
-		writeJSON(w, map[string]string{"error": "id not specified"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "id not specified"})
 		return
 	}
 
 	if err := db.DeleteTask(id); err != nil {
-		writeJSON(w, map[string]string{"error": err.Error()})
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 
-	writeJSON(w, map[string]any{})
+	writeJSON(w, http.StatusOK, map[string]any{})
 }

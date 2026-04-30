@@ -15,25 +15,25 @@ type SigninRequest struct {
 func SigninHandler(w http.ResponseWriter, r *http.Request) {
 	expectPass := os.Getenv("TODO_PASSWORD")
 	if expectPass == "" {
-		writeJSON(w, map[string]string{"token": "no-auth"})
+		writeJSON(w, http.StatusOK, map[string]string{"token": "no-auth"})
 		return
 	}
 
 	var request SigninRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		writeJSON(w, map[string]string{"error": "incorect JSON"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "incorect JSON"})
 		return
 	}
 
 	if request.Password != expectPass {
-		writeJSON(w, map[string]string{"error": "wrong password"})
+		writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "wrong password"})
 		return
 	}
 	token, err := auth.GenerateToken(expectPass)
 	if err != nil {
-		writeJSON(w, map[string]string{"error": "token gen failed"})
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "token gen failed"})
 		return
 	}
 
-	writeJSON(w, map[string]string{"token": token})
+	writeJSON(w, http.StatusOK, map[string]string{"token": token})
 }

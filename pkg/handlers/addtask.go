@@ -39,26 +39,26 @@ func AddTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
-		writeJSON(w, map[string]string{"error": "incorect JSON"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "incorect JSON"})
 		return
 	}
 
 	if task.Title == "" {
-		writeJSON(w, map[string]string{"error": "title is empty"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "title is empty"})
 		return
 	}
 
 	now := time.Now()
 	if err := validateDate(&task, now); err != nil {
-		writeJSON(w, map[string]string{"error": err.Error()})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
 	}
 
 	id, err := db.AddTask(&task)
 	if err != nil {
-		writeJSON(w, map[string]string{"error": err.Error()})
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 
-	writeJSON(w, map[string]any{"id": id})
+	writeJSON(w, http.StatusOK, map[string]any{"id": id})
 }

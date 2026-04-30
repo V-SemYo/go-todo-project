@@ -16,12 +16,12 @@ func TasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	tasks, err := db.Tasks(limit, search)
 	if err != nil {
-		writeJSON(w, map[string]string{"error": err.Error()})
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 	if tasks == nil {
 		tasks = []*db.Task{}
 	}
 
-	writeJSON(w, TaskResp{Tasks: tasks})
+	writeJSON(w, http.StatusOK, TaskResp{Tasks: tasks})
 }
